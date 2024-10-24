@@ -56,36 +56,37 @@ struct Driver {
         let userInput = readLine()
 
         guard
-            let userInput,
-            let number = Int(userInput)
+            let userInput
         else {
             main()
             return
         }
 
-        switch number {
-        case 0:
+		switch userInput {
+        case "0":
             addStudent()
-        case 1:
+        case "1":
             sort()
-        case 2:
+        case "2":
             unseenGrades()
-        case 3:
+        case "3":
             classroom.viewGradesWithoutMarkingThemAsSeen()
 
             goBackOrTryAgain {
                 classroom.viewGradesWithoutMarkingThemAsSeen()
             }
-        case 4:
+        case "4":
             classroom.studentList()
 
             goBackOrTryAgain {
                 classroom.studentList()
             }
-        case 5:
+        case "5":
             batchAddStudents()
-        case 6:
+        case "6":
             addGrade()
+		case "q":
+			exit(0)
         default:
             main()
         }

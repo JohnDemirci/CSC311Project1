@@ -4,8 +4,6 @@
 
 import Foundation
 
-
-
 if #available(macOS 14, *) {
     let driver = Driver()
     driver.run()

@@ -58,7 +58,7 @@ extension Class {
 
     func sortByGrade() {
         students.bubbleSort {
-            switch ($0.averageGrade(), $1.averageGrade()) {
+            switch ($0.grade, $1.grade) {
             case let (.some(lhsGrade), .some(rhsGrade)):
                 lhsGrade.point > rhsGrade.point
             case (.none, .some):
@@ -101,20 +101,19 @@ extension Class {
         let studentFindResult = find(id: id)
 
         switch studentFindResult {
-        case .success(let student):
-            student.addGrade(grade)
+        case let .success(student):
+            let reason = student.upsertGrade(grade)
             unseenUpdatedGrades.addGrade(
                 GradeUpdateDetail(
                     studentID: id,
                     grade: grade,
-                    index: student.grades.count - 1,
                     date: .now,
-                    reason: .new
+                    reason: reason
                 )
             )
             return .success(())
 
-        case .failure(let error):
+        case let .failure(error):
             return .failure(error)
         }
     }
@@ -122,24 +121,17 @@ extension Class {
     @available(macOS 14.0, *)
     func updateGrade(
         _ id: Student.ID,
-        oldIndex: Int,
+        oldIndex _: Int,
         grade: Grade
     ) -> Result<Void, Error> {
         let studentFindResult = find(id: id)
 
         switch studentFindResult {
-        case .success(let student):
-            let updateResult = student.updateGrade(oldGradeIndex: oldIndex, newGrade: grade)
+        case let .success(student):
+            _ = student.upsertGrade(grade)
+            return .success(())
 
-            switch updateResult {
-            case .success:
-                return .success(())
-
-            case .failure(let failure):
-                return .failure(failure)
-            }
-
-        case .failure(let failure):
+        case let .failure(failure):
             return .failure(failure)
         }
     }
